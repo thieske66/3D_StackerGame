@@ -5,16 +5,14 @@ using UnityEngine;
 public class StackVisualizer : MonoBehaviour
 {
     public StackController StackController;
-
     public Transform BlockPrototype;
-
     public List<Transform> ActiveLayerObjects;
-    
+
     protected void Start()
     {
         BlockPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
         BlockPrototype.gameObject.SetActive(false);
-        
+
         StackController.OnActiveLayerShift += OnActiveLayerShift;
         StackController.OnLayerAddedToStack += OnLayerAddedToStack;
         StackController.OnActiveLayerCreated += OnActiveLayerCreated;
@@ -35,7 +33,7 @@ public class StackVisualizer : MonoBehaviour
         int activeLayerHeight = StackController.Stack.LayerCount;
         for (int i = 0; i < ActiveLayerObjects.Count; i++)
         {
-            ActiveLayerObjects[i].position = new Vector3(i, activeLayerHeight, 0);
+            ActiveLayerObjects[i].position = new Vector3(layer.FirstBlock + i, activeLayerHeight, 0);
         }
     }
 
@@ -53,4 +51,10 @@ public class StackVisualizer : MonoBehaviour
             }
         }
     }
+
+    private void updateLayer(Layer layer, int height)
+    {
+
+    }
+
 }

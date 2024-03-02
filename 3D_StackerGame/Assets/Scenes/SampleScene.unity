@@ -271,6 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1186975925}
   - component: {fileID: 1186975924}
+  - component: {fileID: 1186975926}
   m_Layer: 0
   m_Name: Stack
   m_TagString: Untagged
@@ -319,6 +320,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1186975926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186975923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39d41a3c2027b641983371ef09de555, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StackController: {fileID: 1186975924}
+  BlockPrototype: {fileID: 0}
+  ActiveLayerObjects: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
