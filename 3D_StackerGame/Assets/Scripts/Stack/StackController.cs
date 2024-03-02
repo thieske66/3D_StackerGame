@@ -22,26 +22,22 @@ public class StackController : MonoBehaviour
 
     public bool PlaceLayer = false;
 
-
-
+    private void Start()
+    {
+        createStack();
+        int firstBlock = Stack.StackWidth / 2 - InitialLayerSize / 2;
+        int lastBlock = firstBlock + InitialLayerSize;
+        createNewActiveLayer(Stack.StackWidth, firstBlock, lastBlock);
+        StartRunning();
+    }
     private void Update()
     {
-        if (!Running)
-        {
-            createStack();
-            int firstBlock = Stack.StackWidth / 2 - InitialLayerSize / 2;
-            int lastBlock = firstBlock + InitialLayerSize;
-            createNewActiveLayer(Stack.StackWidth, firstBlock, lastBlock);
-            StartRunning();
-        }
-
         if (PlaceLayer)
         {
             PlaceActiveLayer();
             PlaceLayer = false;
         }
     }
-
 
     public void StartRunning()
     {
@@ -71,7 +67,7 @@ public class StackController : MonoBehaviour
         createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
     }
 
-    private void createStack() 
+    private void createStack()
     {
         Stack = new Stack(StackWidth);
     }
@@ -108,8 +104,7 @@ public class StackController : MonoBehaviour
         {
             stopTimer();
         }
-        
-        Debug.Log("Timer triggered");
+
         shiftActiveLayer();
     }
 
