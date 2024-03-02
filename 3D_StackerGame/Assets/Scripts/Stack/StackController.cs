@@ -22,9 +22,7 @@ public class StackController : MonoBehaviour
     private Direction currentDirection = Direction.Right;
 
     public bool PlaceLayer = false;
-    public Action<Layer> OnLayerAddedToStack;
-    public Action<Layer> OnActiveLayerShift;
-    public Action<Layer> OnActiveLayerCreated;
+    public Action<Layer, int> OnStackUpdate;
 
     private void Start()
     {
@@ -73,7 +71,7 @@ public class StackController : MonoBehaviour
             StopRunning();
             return;
         }
-        OnLayerAddedToStack?.Invoke(ActiveLayer);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount);
         ActiveLayer = null;
         updateShiftInterval();
         createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
@@ -83,12 +81,11 @@ public class StackController : MonoBehaviour
     {
         Stack = new Stack(StackWidth);
     }
-
-
+    
     private void createNewActiveLayer(int blocksInLayer, int firstBlock, int lastBlock)
     {
         ActiveLayer = new Layer(blocksInLayer, firstBlock, lastBlock);
-        OnActiveLayerCreated?.Invoke(ActiveLayer);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount + 1);
     }
 
     private void updateShiftInterval()
@@ -113,7 +110,7 @@ public class StackController : MonoBehaviour
     {
         ActiveLayer.ShiftBlocks(1, currentDirection);
         updateDirection();
-        OnActiveLayerShift?.Invoke(ActiveLayer);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount + 1);
     }
 
     private void updateDirection()

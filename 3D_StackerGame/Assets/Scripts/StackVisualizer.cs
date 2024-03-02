@@ -6,55 +6,52 @@ public class StackVisualizer : MonoBehaviour
 {
     public StackController StackController;
     public Transform BlockPrototype;
-    public List<Transform> ActiveLayerObjects;
+    
+    public Dictionary<int, List<Transform>> BlockObjects = new Dictionary<int, List<Transform>>();
 
     protected void Start()
     {
         BlockPrototype = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
         BlockPrototype.gameObject.SetActive(false);
-
-        StackController.OnActiveLayerShift += OnActiveLayerShift;
-        StackController.OnLayerAddedToStack += OnLayerAddedToStack;
-        StackController.OnActiveLayerCreated += OnActiveLayerCreated;
+        
+        StackController.OnStackUpdate += updateLayer;
     }
-
-    private void OnActiveLayerCreated(Layer newLayer)
+    
+    private List<Transform> SpawnLayer(Layer layer, int height)
     {
-        SpawnLayer(newLayer);
-    }
+        List<Transform> newBlockObjects = new List<Transform>();
 
-    private void OnLayerAddedToStack(Layer layerAddedToStack)
-    {
-        ActiveLayerObjects.Clear();
-    }
-
-    private void OnActiveLayerShift(Layer layer)
-    {
-        int activeLayerHeight = StackController.Stack.LayerCount;
-        for (int i = 0; i < ActiveLayerObjects.Count; i++)
-        {
-            ActiveLayerObjects[i].position = new Vector3(layer.FirstBlock + i, activeLayerHeight, 0);
-        }
-    }
-
-    private void SpawnLayer(Layer layer)
-    {
-        //Draw the new Layer
-        int blockHeight = StackController.Stack.LayerCount;
         for (int i = 0; i < layer.Blocks.Length; i++)
         {
-            if (layer.Blocks[i].Enabled)
-            {
-                Transform blockObject = GameObject.Instantiate(BlockPrototype, new Vector3(i, blockHeight, 0), quaternion.identity);
-                blockObject.gameObject.SetActive(true);
-                ActiveLayerObjects.Add(blockObject);
-            }
+            Transform blockObject = GameObject.Instantiate(BlockPrototype, new Vector3(i, height, 0), quaternion.identity);
+            blockObject.name = $"{height}-{i}";
+            blockObject.SetParent(this.transform);
+            blockObject.gameObject.SetActive(true);
+            newBlockObjects.Add(blockObject);
         }
+
+        if (!BlockObjects.TryAdd(height, newBlockObjects))
+        {
+            Debug.Log("Could not add blockobjects");
+        }
+
+        return newBlockObjects;
     }
 
     private void updateLayer(Layer layer, int height)
     {
-
+        if (!BlockObjects.TryGetValue(height, out List<Transform> blockObjects))
+        {
+            blockObjects = SpawnLayer(layer, height);
+        }
+        SetBlockObjects(layer, blockObjects);
     }
 
+    private void SetBlockObjects(Layer layer, List<Transform> _blockObjects)
+    {
+        for (int i = 0; i < layer.Blocks.Length; i++)
+        {
+            _blockObjects[i].gameObject.SetActive(layer.Blocks[i].Enabled);
+        }
+    }
 }
