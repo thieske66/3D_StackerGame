@@ -4,6 +4,8 @@ using static Layer;
 
 public class StackController : MonoBehaviour
 {
+    public int StackWidth = 11;
+    public int InitialLayerSize = 5;
     public Stack Stack;
     public Layer ActiveLayer;
     public float StartShiftInterval = 1f;
@@ -14,6 +16,28 @@ public class StackController : MonoBehaviour
 
     private Timer timer;
     private Direction currentDirection = Direction.Right;
+
+    public bool PlaceLayer = false;
+
+
+
+    private void Update()
+    {
+        if (!Running)
+        {
+            createStack();
+            int firstBlock = Stack.StackWidth / 2 - InitialLayerSize / 2;
+            int lastBlock = firstBlock + InitialLayerSize;
+            createNewActiveLayer(Stack.StackWidth, firstBlock, lastBlock);
+            StartRunning();
+        }
+
+        if (PlaceLayer)
+        {
+            PlaceActiveLayer();
+            PlaceLayer = false;
+        }
+    }
 
 
     public void StartRunning()
@@ -27,29 +51,38 @@ public class StackController : MonoBehaviour
         Stack.AddLayer(ActiveLayer);
         ActiveLayer = null;
         updateShiftInterval();
-        createNewActiveLayer();
+        createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
     }
 
-    private void createNewActiveLayer()
+    private void createStack() 
     {
-        ActiveLayer = new Layer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
+        Stack = new Stack(StackWidth);
+    }
+
+
+    private void createNewActiveLayer(int blocksInLayer, int firstBlock, int lastBlock)
+    {
+        ActiveLayer = new Layer(blocksInLayer, firstBlock, lastBlock);
     }
 
     private void updateShiftInterval()
     {
-        currentShiftInterval = StartShiftInterval * DifficultyScale * Stack.LayerCount;
+        currentShiftInterval = StartShiftInterval + (StartShiftInterval * DifficultyScale * Stack.LayerCount);
         timer.Interval = currentShiftInterval;
     }
 
     private void startTimer()
     {
+        updateShiftInterval();
         timer = new Timer(currentShiftInterval);
         timer.AutoReset = true;
         timer.Elapsed += onTimerTriggered;
+        timer.Start();
     }
 
     private void onTimerTriggered(object sender, ElapsedEventArgs e)
     {
+        Debug.Log("Timer triggered");
         shiftActiveLayer();
     }
 

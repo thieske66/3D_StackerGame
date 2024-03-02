@@ -1,6 +1,7 @@
-using UnityEngine;
+using System;
 
-public class Block : MonoBehaviour
+[Serializable]
+public class Block
 {
     public bool Enabled = false;
 

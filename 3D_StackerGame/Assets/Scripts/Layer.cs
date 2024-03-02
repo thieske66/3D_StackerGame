@@ -1,7 +1,7 @@
 using System;
-using UnityEngine;
 
-public class Layer : MonoBehaviour
+[Serializable]
+public class Layer
 {
     public Block[] Blocks;
     public int FirstBlock;
@@ -23,6 +23,10 @@ public class Layer : MonoBehaviour
     public Layer(int blocksInLayer, int firstBlock, int lastBlock)
     {
         Blocks = new Block[blocksInLayer];
+        for (int i = 0; i < Blocks.Length; i++)
+        {
+            Blocks[i] = new Block();
+        }
         SetBlocksEnabled(firstBlock, lastBlock);
     }
 

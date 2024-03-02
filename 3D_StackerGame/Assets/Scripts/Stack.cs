@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
-public class Stack : MonoBehaviour
+[Serializable]
+public class Stack
 {
     public List<Layer> Layers;
     public int StackWidth;
@@ -36,18 +36,21 @@ public class Stack : MonoBehaviour
             throw new ArgumentException("Cannot add layer without active blocks");
         }
 
-        layer.FirstBlock = new List<int>()
+        int firstBlock = new List<int>()
         { 
             layer.FirstBlock, 
             Layers[^1].FirstBlock, 
             0 
         }.Max();
-        layer.LastBlock = new List<int>() 
+        layer.FirstBlock = firstBlock;
+
+        int lastBlock = new List<int>() 
         { 
             layer.LastBlock, 
             Layers[^1].LastBlock, 
             StackWidth - 1 
         }.Min();
+        layer.LastBlock = lastBlock;
 
         Layers.Add(layer);
     }
