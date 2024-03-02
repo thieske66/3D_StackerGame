@@ -12,7 +12,11 @@ public class Stack
     {
         get
         {
-            return Layers[^1];
+            if (Layers.Count > 0)
+            {
+                return Layers[^1];
+            }
+            return null;
         }
     }
     public int LayerCount
@@ -29,29 +33,35 @@ public class Stack
         StackWidth = stackWidth;
     }
 
-    public void AddLayer(Layer layer)
+    public bool AddLayer(Layer layer)
     {
         if(layer.ActiveBlocksInLayer <= 0)
         {
             throw new ArgumentException("Cannot add layer without active blocks");
         }
 
-        int firstBlock = new List<int>()
-        { 
-            layer.FirstBlock, 
-            Layers[^1].FirstBlock, 
-            0 
+        int firstBlock = new List<int>
+        {
+            layer.FirstBlock,
+            0,
+            TopLayer?.FirstBlock ?? 0
         }.Max();
-        layer.FirstBlock = firstBlock;
 
         int lastBlock = new List<int>() 
         { 
             layer.LastBlock, 
-            Layers[^1].LastBlock, 
-            StackWidth - 1 
+            StackWidth - 1,
+            TopLayer?.LastBlock ?? StackWidth -1
         }.Min();
-        layer.LastBlock = lastBlock;
 
+        if (firstBlock > lastBlock)
+        {
+            return false;
+        }
+
+        layer.SetBlocksEnabled(firstBlock, lastBlock);
         Layers.Add(layer);
+
+        return true;
     }
 }

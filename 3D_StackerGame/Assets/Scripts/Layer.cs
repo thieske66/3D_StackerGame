@@ -10,7 +10,7 @@ public class Layer
     {
         get
         {
-            return LastBlock - FirstBlock;
+            return LastBlock - FirstBlock + 1;
         }
     }
 
@@ -32,6 +32,11 @@ public class Layer
 
     public void SetBlocksEnabled(int firstBlock, int lastBlock)
     {
+        if(firstBlock > lastBlock)
+        {
+            throw new ArgumentException("First block cannot be larger than Last block");
+        }
+
         FirstBlock = firstBlock;
         LastBlock = lastBlock;
         updateBlocks();
@@ -46,8 +51,9 @@ public class Layer
 
         int shiftValue = amount * (int)direction;
 
-        FirstBlock = Math.Min(FirstBlock + shiftValue, Blocks.Length - 1);
-        LastBlock = Math.Max(LastBlock + shiftValue, 0);
+        int firstBlock = Math.Min(FirstBlock + shiftValue, Blocks.Length - 1);
+        int lastBlock = Math.Max(LastBlock + shiftValue, 0);
+        SetBlocksEnabled(firstBlock, lastBlock);
     }
 
     private void updateBlocks()

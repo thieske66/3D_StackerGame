@@ -4,14 +4,17 @@ using static Layer;
 
 public class StackController : MonoBehaviour
 {
+    private const float MINIMUM_SHIFT_INTERVAL = 0.1f;
+
     public int StackWidth = 11;
     public int InitialLayerSize = 5;
     public Stack Stack;
     public Layer ActiveLayer;
-    public float StartShiftInterval = 1f;
+    public float StartShiftIntervalMS = 1000f;
     public float DifficultyScale = 0.1f;
     public bool Running = false;
 
+    [SerializeField]
     private float currentShiftInterval = 1f;
 
     private Timer timer;
@@ -44,11 +47,25 @@ public class StackController : MonoBehaviour
     {
         Running = true;
         startTimer();
+
+        Debug.Log("Started running!");
+    }
+
+    public void StopRunning()
+    {
+        Running = false;
+        stopTimer();
+
+        Debug.Log("Stopped running!");
     }
 
     public void PlaceActiveLayer()
     {
-        Stack.AddLayer(ActiveLayer);
+        if (!Stack.AddLayer(ActiveLayer))
+        {
+            StopRunning();
+            return;
+        }
         ActiveLayer = null;
         updateShiftInterval();
         createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
@@ -67,21 +84,31 @@ public class StackController : MonoBehaviour
 
     private void updateShiftInterval()
     {
-        currentShiftInterval = StartShiftInterval + (StartShiftInterval * DifficultyScale * Stack.LayerCount);
+        currentShiftInterval = Mathf.Max(StartShiftIntervalMS - (StartShiftIntervalMS * DifficultyScale * Stack.LayerCount), MINIMUM_SHIFT_INTERVAL);
         timer.Interval = currentShiftInterval;
     }
 
     private void startTimer()
     {
-        updateShiftInterval();
-        timer = new Timer(currentShiftInterval);
+        timer = new Timer();
         timer.AutoReset = true;
         timer.Elapsed += onTimerTriggered;
+        updateShiftInterval();
         timer.Start();
+    }
+
+    private void stopTimer()
+    {
+        timer.Dispose();
     }
 
     private void onTimerTriggered(object sender, ElapsedEventArgs e)
     {
+        if (this == null)
+        {
+            stopTimer();
+        }
+        
         Debug.Log("Timer triggered");
         shiftActiveLayer();
     }
@@ -98,5 +125,10 @@ public class StackController : MonoBehaviour
         {
             currentDirection = (Direction)((int)currentDirection * -1);
         }
+    }
+
+    private void OnDestroy()
+    {
+        stopTimer();
     }
 }

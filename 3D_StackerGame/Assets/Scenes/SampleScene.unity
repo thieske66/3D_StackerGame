@@ -253,9 +253,10 @@ MonoBehaviour:
     Blocks: []
     FirstBlock: 0
     LastBlock: 0
-  StartShiftInterval: 1
-  DifficultyScale: 0.01
+  StartShiftIntervalMS: 1000
+  DifficultyScale: 0.1
   Running: 0
+  currentShiftInterval: 1
   PlaceLayer: 0
 --- !u!4 &1186975925
 Transform:
