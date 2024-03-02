@@ -1,4 +1,4 @@
-using System.Timers;
+using System;
 using UnityEngine;
 using static Layer;
 
@@ -10,17 +10,19 @@ public class StackController : MonoBehaviour
     public int InitialLayerSize = 5;
     public Stack Stack;
     public Layer ActiveLayer;
-    public float StartShiftIntervalMS = 1000f;
+    public float StartShiftInterval = 1f;
     public float DifficultyScale = 0.1f;
     public bool Running = false;
 
     [SerializeField]
     private float currentShiftInterval = 1f;
 
-    private Timer timer;
+    [SerializeField]
+    private TimedTrigger timer;
     private Direction currentDirection = Direction.Right;
 
     public bool PlaceLayer = false;
+    public Action<Layer, int> OnStackUpdate;
 
     private void Start()
     {
@@ -30,6 +32,7 @@ public class StackController : MonoBehaviour
         createNewActiveLayer(Stack.StackWidth, firstBlock, lastBlock);
         StartRunning();
     }
+
     private void Update()
     {
         if (PlaceLayer)
@@ -38,11 +41,18 @@ public class StackController : MonoBehaviour
             PlaceLayer = false;
         }
     }
+    private void FixedUpdate()
+    {
+        if (Running)
+        {
+            timer?.Elapse(Time.fixedDeltaTime);
+        }
+    }
 
     public void StartRunning()
     {
         Running = true;
-        startTimer();
+        restartTimer();
 
         Debug.Log("Started running!");
     }
@@ -50,7 +60,6 @@ public class StackController : MonoBehaviour
     public void StopRunning()
     {
         Running = false;
-        stopTimer();
 
         Debug.Log("Stopped running!");
     }
@@ -62,6 +71,7 @@ public class StackController : MonoBehaviour
             StopRunning();
             return;
         }
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount);
         ActiveLayer = null;
         updateShiftInterval();
         createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
@@ -71,40 +81,28 @@ public class StackController : MonoBehaviour
     {
         Stack = new Stack(StackWidth);
     }
-
-
+    
     private void createNewActiveLayer(int blocksInLayer, int firstBlock, int lastBlock)
     {
         ActiveLayer = new Layer(blocksInLayer, firstBlock, lastBlock);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount + 1);
     }
 
     private void updateShiftInterval()
     {
-        currentShiftInterval = Mathf.Max(StartShiftIntervalMS - (StartShiftIntervalMS * DifficultyScale * Stack.LayerCount), MINIMUM_SHIFT_INTERVAL);
+        currentShiftInterval = Mathf.Max(StartShiftInterval - (StartShiftInterval * DifficultyScale * Stack.LayerCount), MINIMUM_SHIFT_INTERVAL);
         timer.Interval = currentShiftInterval;
     }
 
-    private void startTimer()
+    private void restartTimer()
     {
-        timer = new Timer();
-        timer.AutoReset = true;
-        timer.Elapsed += onTimerTriggered;
+        timer = new TimedTrigger();
+        timer.OnElapsed += onTimerTriggered;
         updateShiftInterval();
-        timer.Start();
     }
 
-    private void stopTimer()
+    private void onTimerTriggered()
     {
-        timer.Dispose();
-    }
-
-    private void onTimerTriggered(object sender, ElapsedEventArgs e)
-    {
-        if (this == null)
-        {
-            stopTimer();
-        }
-
         shiftActiveLayer();
     }
 
@@ -112,6 +110,7 @@ public class StackController : MonoBehaviour
     {
         ActiveLayer.ShiftBlocks(1, currentDirection);
         updateDirection();
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount + 1);
     }
 
     private void updateDirection()
@@ -120,10 +119,5 @@ public class StackController : MonoBehaviour
         {
             currentDirection = (Direction)((int)currentDirection * -1);
         }
-    }
-
-    private void OnDestroy()
-    {
-        stopTimer();
     }
 }
