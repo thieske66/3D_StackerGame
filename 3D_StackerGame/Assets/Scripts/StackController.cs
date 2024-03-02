@@ -1,6 +1,8 @@
+using System;
 using System.Timers;
 using UnityEngine;
 using static Layer;
+using Timer = System.Timers.Timer;
 
 public class StackController : MonoBehaviour
 {
@@ -21,6 +23,9 @@ public class StackController : MonoBehaviour
     private Direction currentDirection = Direction.Right;
 
     public bool PlaceLayer = false;
+    public Action<Layer> OnLayerAddedToStack;
+    public Action<Layer> OnActiveLayerShift;
+    public Action<Layer> OnActiveLayerCreated;
 
 
 
@@ -66,6 +71,7 @@ public class StackController : MonoBehaviour
             StopRunning();
             return;
         }
+        OnLayerAddedToStack?.Invoke(ActiveLayer);
         ActiveLayer = null;
         updateShiftInterval();
         createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
@@ -80,6 +86,7 @@ public class StackController : MonoBehaviour
     private void createNewActiveLayer(int blocksInLayer, int firstBlock, int lastBlock)
     {
         ActiveLayer = new Layer(blocksInLayer, firstBlock, lastBlock);
+        OnActiveLayerCreated?.Invoke(ActiveLayer);
     }
 
     private void updateShiftInterval()
@@ -91,6 +98,7 @@ public class StackController : MonoBehaviour
     private void startTimer()
     {
         timer = new Timer();
+        timer.SynchronizingObject = 
         timer.AutoReset = true;
         timer.Elapsed += onTimerTriggered;
         updateShiftInterval();
@@ -109,7 +117,7 @@ public class StackController : MonoBehaviour
             stopTimer();
         }
         
-        Debug.Log("Timer triggered");
+        //Debug.Log("Timer triggered");
         shiftActiveLayer();
     }
 
@@ -117,6 +125,7 @@ public class StackController : MonoBehaviour
     {
         ActiveLayer.ShiftBlocks(1, currentDirection);
         updateDirection();
+        OnActiveLayerShift?.Invoke(ActiveLayer);
     }
 
     private void updateDirection()

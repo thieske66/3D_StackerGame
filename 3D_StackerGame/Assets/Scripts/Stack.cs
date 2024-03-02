@@ -5,7 +5,7 @@ using System.Linq;
 [Serializable]
 public class Stack
 {
-    public List<Layer> Layers;
+    public List<Layer> Layers = new List<Layer>();
     public int StackWidth;
 
     public Layer TopLayer
