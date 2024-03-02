@@ -1,0 +1,56 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "StackControls",
+            "id": "7feb34c4-da33-4c75-857e-f57cb00da9b9",
+            "actions": [
+                {
+                    "name": "PlaceLayer",
+                    "type": "Button",
+                    "id": "0c6ed97a-8d33-40bf-8f5c-2571d363c8a9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "041a393c-998a-41a3-abc4-1373983cf7f6",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlaceLayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dd3dcd4a-906b-4ddd-a793-65d8e99f7486",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlaceLayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0fd26635-20d9-45a3-8023-d2ad31342a3a",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlaceLayer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
