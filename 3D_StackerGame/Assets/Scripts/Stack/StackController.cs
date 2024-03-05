@@ -4,12 +4,13 @@ using static Layer;
 
 public class StackController : MonoBehaviour
 {
-    private const float MINIMUM_SHIFT_INTERVAL = 0.1f;
+    private const float MINIMUM_SHIFT_INTERVAL = 0.01f;
 
     public int StackWidth = 11;
     public int InitialLayerSize = 5;
     public Stack Stack;
     public Layer ActiveLayer;
+    [Range(0.1f, 1f)]
     public float StartShiftInterval = 1f;
     public float DifficultyScale = 0.1f;
     public bool Running = false;
@@ -71,7 +72,7 @@ public class StackController : MonoBehaviour
             StopRunning();
             return;
         }
-        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount - 1);
         ActiveLayer = null;
         updateShiftInterval();
         createNewActiveLayer(Stack.StackWidth, Stack.TopLayer.FirstBlock, Stack.TopLayer.LastBlock);
@@ -85,7 +86,7 @@ public class StackController : MonoBehaviour
     private void createNewActiveLayer(int blocksInLayer, int firstBlock, int lastBlock)
     {
         ActiveLayer = new Layer(blocksInLayer, firstBlock, lastBlock);
-        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount + 1);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount);
     }
 
     private void updateShiftInterval()
@@ -110,7 +111,7 @@ public class StackController : MonoBehaviour
     {
         ActiveLayer.ShiftBlocks(1, currentDirection);
         updateDirection();
-        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount + 1);
+        OnStackUpdate?.Invoke(ActiveLayer, Stack.LayerCount);
     }
 
     private void updateDirection()

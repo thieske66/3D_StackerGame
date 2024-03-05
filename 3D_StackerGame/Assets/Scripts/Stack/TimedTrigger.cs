@@ -20,7 +20,6 @@ public class TimedTrigger
     {
         if (elapsed >= Interval)
         {
-            Debug.Log("elapsed");
             OnElapsed?.Invoke();
             elapsed -= Interval;
             checkElapsed();
