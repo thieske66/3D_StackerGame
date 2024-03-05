@@ -338,7 +338,9 @@ MonoBehaviour:
   BlockPrototype: {fileID: 3873028013923362151, guid: 584e090d50fc9bb47868f26a012d3019, type: 3}
   Layers: []
   LayerHeight: 1
-  LayerMargin: 0
+  LayerMargin: 0.25
+  BlockSize: 1
+  BlockMargin: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

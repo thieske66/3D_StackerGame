@@ -12,6 +12,8 @@ public class StackVisualizer : MonoBehaviour
     public List<LayerObject> Layers = new List<LayerObject>();
     public float LayerHeight = 1f;
     public float LayerMargin = 0f;
+    public float BlockSize = 1f;
+    public float BlockMargin = 0f;
 
     private void Awake()
     {
@@ -63,6 +65,8 @@ public class StackVisualizer : MonoBehaviour
         LayerObject newLayerObject = newLayer.AddComponent<LayerObject>();
         newLayer.transform.localPosition = Vector3.up * (LayerHeight + LayerMargin) * currentLayerCount;
         newLayerObject.BlockPrototype = BlockPrototype;
+        newLayerObject.BlockSize = BlockSize;
+        newLayerObject.BlockMargin = BlockMargin;
 
         return newLayerObject;
     }

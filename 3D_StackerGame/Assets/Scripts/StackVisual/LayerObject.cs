@@ -11,7 +11,7 @@ public class LayerObject : MonoBehaviour
 
     private void Awake()
     {
-        Blocks = new List<BlockObject>(this.gameObject.GetComponentsInChildren<BlockObject>());
+        Blocks = new List<BlockObject>();
     }
 
     public void UpdateLayer(Layer layer)
