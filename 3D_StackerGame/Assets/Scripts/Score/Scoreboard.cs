@@ -6,25 +6,37 @@ public class Scoreboard : MonoBehaviour
     public int Score { get; private set; }
 
     public Action<int> OnScoreChanged;
+    public StackController Stack;
+    public int ScorePerStackLayer = 15;
+
 
     public int DebugScore;
     public bool DebugSetScore = false;
 
-    public void Update()
+    private void Awake()
     {
-        // DEBUG //
-        if (DebugSetScore)
-        {
-            DebugSetScore = false;
-            SetScore(DebugScore);
-        }
-        ////////////
+        Stack = GameObject.FindObjectOfType<StackController>();
+    }
+
+    private void Start()
+    {
+        Stack.OnStackUpdate += updateScore;
+    }
+
+    private void updateScore(Layer activeLayer, int layerHeight)
+    {
+        int score = Stack.Stack.LayerCount * ScorePerStackLayer;
+        SetScore(score);
     }
 
     public void SetScore(int score)
     {
-        this.Score = score;
+        if(Score == score)
+        {
+            return;
+        }
 
+        Score = score;
         OnScoreChanged?.Invoke(Score);
     }
 

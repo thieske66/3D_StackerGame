@@ -23,6 +23,10 @@ public class StackController : MonoBehaviour
     private Direction currentDirection = Direction.Right;
 
     public bool PlaceLayer = false;
+
+    /// <summary>
+    /// Called when anything in the stack changed. params ActiveLayer, LayerHeight
+    /// </summary>
     public Action<Layer, int> OnStackUpdate;
 
     private void Start()

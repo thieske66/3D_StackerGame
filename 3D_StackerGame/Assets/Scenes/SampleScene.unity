@@ -542,6 +542,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc839197675d5fe47af41a4cc2355350, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Stack: {fileID: 0}
+  ScorePerStackLayer: 15
   DebugScore: 0
   DebugSetScore: 0
 --- !u!4 &1147874513
@@ -636,7 +638,7 @@ MonoBehaviour:
   BlockPrototype: {fileID: 3873028013923362151, guid: 584e090d50fc9bb47868f26a012d3019, type: 3}
   Layers: []
   LayerHeight: 1
-  LayerMargin: 0.25
+  LayerMargin: 0.1
   BlockSize: 1
   BlockMargin: 0.1
 --- !u!1 &1876415640
