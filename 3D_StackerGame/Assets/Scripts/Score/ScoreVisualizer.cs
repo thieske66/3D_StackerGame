@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 
 public class ScoreVisualizer : MonoBehaviour
 {
     public int ScoreValue;
     public float TimeToIncrementScore = 1f;
+    public TextMeshProUGUI TextComponent;
 
     private Scoreboard score;
     private int previousScore;
@@ -19,6 +21,7 @@ public class ScoreVisualizer : MonoBehaviour
     private void Start()
     {
         score.OnScoreChanged += updateScore;
+        updateText();
     }
 
     public void Update()
@@ -37,6 +40,7 @@ public class ScoreVisualizer : MonoBehaviour
         float timeFactor = timeSinceStartAnimation / TimeToIncrementScore;
 
         ScoreValue = (int)Mathf.Lerp(previousScore, newScore, timeFactor);
+        updateText();
 
         if (timeFactor >= 1f)
         {
@@ -51,5 +55,10 @@ public class ScoreVisualizer : MonoBehaviour
         
         scoreIncreaseStartTime = Time.realtimeSinceStartup;
         increasingScore = true;
+    }
+
+    private void updateText()
+    {
+        TextComponent.text = ScoreValue.ToString();
     }
 }
