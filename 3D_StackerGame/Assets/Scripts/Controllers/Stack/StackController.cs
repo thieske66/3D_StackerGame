@@ -22,6 +22,9 @@ public class StackController : MonoBehaviour
     private TimedTrigger timer;
     private Direction currentDirection = Direction.Right;
 
+    [SerializeField]
+    private bool DEBUG_AutoStack = false;
+
     public bool PlaceLayer = false;
 
     /// <summary>
@@ -71,6 +74,11 @@ public class StackController : MonoBehaviour
 
     public void PlaceActiveLayer()
     {
+        if (DEBUG_AutoStack)
+        {
+            ActiveLayer = new Layer(Stack.StackWidth, Stack.TopLayer?.FirstBlock ?? 3, Stack.TopLayer?.LastBlock ?? 8);
+        }
+
         if (!Stack.AddLayer(ActiveLayer))
         {
             StopRunning();
